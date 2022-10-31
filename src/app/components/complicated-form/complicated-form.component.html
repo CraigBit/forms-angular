@@ -1,0 +1,159 @@
+<div class="col-xs-12">
+  <form #myForm="ngForm" (ngSubmit)="submitForm(myForm)">
+    <nav class="navbar navbar-light bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">Items</a>
+        <form class="d-flex">
+          <input
+            type="search"
+            class="form-control me-2"
+            placeholder="Search"
+            aria-label="Search"
+          />
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+      </div>
+    </nav>
+
+    <div>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th *ngFor="let titleItem of titleList">{{ titleItem }}</th>
+            <td>
+              <button
+                type="button"
+                class="btn btn-primary"
+                (click)="addCategory()"
+              >
+                Add Category
+              </button>
+            </td>
+          </tr>
+        </thead>
+        <tbody *ngFor="let item of localItems">
+          <tr>
+            <td title="Category">
+              <input
+                [ngClass]="{ 'has-error': Category.invalid }"
+                type="text"
+                name="cat{{ item.id }}"
+                id=""
+                class="form-control"
+                [(ngModel)]="item.name"
+                #Category="ngModel"
+                required
+              />
+            </td>
+            <td colspan="5"></td>
+            <td title="Add Item / Remove Category">
+              <button
+                type="button"
+                class="btn btn-primary"
+                (click)="addItem(item.id)"
+              >
+                Add Item
+              </button>
+              <button
+                type="button"
+                [disabled]="localItems.length <= 1"
+                class="btn btn-danger ms-2"
+                (click)="removeCategory(item.id)"
+              >
+                Remove Category
+              </button>
+            </td>
+          </tr>
+          <tr *ngFor="let items of item['items']">
+            <td></td>
+            <td title="Items">
+              <input
+                [ngClass]="{ 'has-error': Item.invalid }"
+                type="text"
+                class="form-control"
+                name="item{{ items.id }}"
+                [(ngModel)]="items.name"
+                #Item="ngModel"
+                required
+              />
+            </td>
+            <td title="Gl code">
+              <input
+                [ngClass]="{ 'has-error': GlCode.invalid }"
+                type="text"
+                class="form-control"
+                name="glcode{{ items.id }}"
+                [(ngModel)]="items.glCode"
+                pattern="\d+"
+                #GlCode="ngModel"
+                required
+              />
+            </td>
+            <td title="Amount">
+              <input
+                [ngClass]="{ 'has-error': Amount.invalid && Amount.touched }"
+                type="text"
+                class="form-control"
+                name="amount{{ items.id }}"
+                [(ngModel)]="items.amount"
+                pattern="\d+"
+                #Amount="ngModel"
+                required
+                (ngModelChange)="getTotal()"
+              />
+            </td>
+            <td title="Sales Tax">
+              <select
+                [ngClass]="{
+                  'has-error': SalesTax.invalid && SalesTax.touched
+                }"
+                class="form-control"
+                name="salesTax{{ items.id }}"
+                [(ngModel)]="items.salesTax"
+                #SalesTax="ngModel"
+                required
+                (ngModelChange)="getTotal(false)"
+              >
+                <option value="null" hidden>Choose</option>
+                <option *ngFor="let tax of salesTaxList" [ngValue]="tax.value">
+                  {{ tax.title }}
+                </option>
+              </select>
+              {{ items.salesTax | currency }}
+            </td>
+            <td title="Total">
+              <ng-container *ngIf="items.amount">
+                {{ +items.amount + +items.salesTax | currency }}
+              </ng-container>
+            </td>
+            <td title="Remove">
+              <button
+                (click)="removeItem(item.id, items.id)"
+                type="button"
+                title="Remove"
+                [disabled]="item['items'].length <= 1"
+                class="btn btn-danger"
+              >
+                Remove item
+              </button>
+            </td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="2"></td>
+            <td title="Total">
+              <strong>Total</strong>
+            </td>
+            <td title="Amount">{{ totalAmount | currency }}</td>
+            <td title="Sales Tax">{{ totalTaxes | currency }}</td>
+            <td title="Total">{{ totalAmount + totalTaxes | currency }}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    <div class="d-grid gap-2 col-4 mx-auto">
+      <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+    </div>
+  </form>
+</div>

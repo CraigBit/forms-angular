@@ -1,0 +1,53 @@
+<!-- Шаблонная форма с валидацией -->
+<!-- В простой форме контроллеры создаются сами через атрибут name, в значении указывается имя контроллера -->
+<div>
+  <p>Template Form</p>
+  <form #myForm="ngForm" (ngSubmit)="submitForm(myForm)">
+    <div>Имя: <input type="text" name="name" ngModel /></div>
+    <div>
+      Возраст:
+      <input type="text" name="age" ngModel required pattern="^[0-9]+$" />
+    </div>
+    <div>Профессия: <input type="text" name="prof" ngModel /></div>
+    <button type="submit">Отправить</button>
+    <button type="reset" (click)="myForm.reset()">Очистить</button>
+  </form>
+</div>
+
+<br />
+<hr />
+<br />
+
+<!-- Реактивная форма formGroup с валидацией -->
+<div>
+  <p>Form Group</p>
+  <form [formGroup]="reactiveForm" (ngSubmit)="submitForm2()">
+    <div>Имя: <input type="text" formControlName="name" /></div>
+    <div>Возраст: <input type="text" formControlName="age" /></div>
+    <div
+      *ngIf="reactiveForm.invalid && reactiveForm.touched"
+      style="color: brown"
+    >
+      Должно быть число
+    </div>
+    <div>Профессия: <input type="text" formControlName="profee" /></div>
+    <button [disabled]="reactiveForm.invalid" type="submit">Отправить</button>
+    <button type="reset" (click)="myForm.reset()">Очистить</button>
+  </form>
+</div>
+
+<br />
+<hr />
+<br />
+
+<!-- Реактивная форма formBuilder -->
+<div>
+  <p>Form Builder</p>
+  <form [formGroup]="builderForm" (ngSubmit)="submitForm3()">
+    <div>Имя: <input type="text" formControlName="name" /></div>
+    <div>Возраст: <input type="text" formControlName="age" /></div>
+    <div>Профессия: <input type="text" formControlName="profee" /></div>
+    <button type="submit">Отправить</button>
+    <button type="reset" (click)="myForm.reset()">Очистить</button>
+  </form>
+</div>
